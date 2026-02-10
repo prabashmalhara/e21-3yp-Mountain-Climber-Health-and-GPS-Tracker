@@ -7,7 +7,7 @@ repository-name: e21-3yp-Mountain-Climber-Health-and-GPS-Tracker
 title: Mountain Climber Health and GPS Tracker
 ---
 
-# {{ page.title }}
+# Mountain Climber Health and GPS Tracker
 
 ---
 
