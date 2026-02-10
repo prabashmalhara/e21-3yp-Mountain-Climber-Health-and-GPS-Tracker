@@ -1,30 +1,37 @@
 {
-    "team": [
-        {
-            "name": "Team Member Name 1",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
-        },
-        {
-            "name": "Team Member Name 2",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
-        },
-        {
-            "name": "Team Member Name 3",
-            "email": "email@eng.pdn.ac.lk",
-            "eNumber": "E/yy/xxx"
-        }
-    ],
-    "supervisors": [
-        {
-            "name": "Dr. Supervisor 1",
-            "email": "email@eng.pdn.ac.lk"
-        },
-        {
-            "name": "Supervisor 2",
-            "email": "email@eng.pdn.ac.lk"
-        }
-    ],
-    "tags": []
+  "title": "Mountain Climber Health and GPS Tracker",
+  "team": [
+    {
+      "name": "Sahan Jayasundara",
+      "email": "e21198@eng.pdn.ac.lk",
+      "eNumber": "E/21/198"
+    },
+    {
+      "name": "Prabash Rathnayaka",
+      "email": "e21328@eng.pdn.ac.lk",
+      "eNumber": "E/21/328"
+    },
+    {
+      "name": "Pasan Sandeep",
+      "email": "e21353@eng.pdn.ac.lk",
+      "eNumber": "E/21/353"
+    }
+  ],
+  "supervisors": [
+    {
+      "name": "Ms. Yashodha Vimukthi",
+      "email": "yasodhav@eng.pdn.ac.lk"
+    },
+    {
+      "name": "Thiliru Samaradiwakara",
+      "email": "e19489@eng.pdn.ac.lk"
+    }
+  ],
+  "tags": [
+    "IoT",
+    "Embedded Systems",
+    "Health",
+    "Automation",
+    "Cloud Computing"
+  ]
 }
