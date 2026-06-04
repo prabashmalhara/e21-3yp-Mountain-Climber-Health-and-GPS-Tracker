@@ -4,364 +4,345 @@ permalink: index.html
 
 # Updated variables
 repository-name: e21-3yp-Mountain-Climber-Health-and-GPS-Tracker
-title: Mountain Climber Health and GPS Tracker
+title: Mountain Climber IoT Safety Tracking System
 ---
 
-# 🏔️ Mountain Climber Health and GPS Tracker
+# Mountain Climber IoT Safety Tracking System
 
 <p align="center">
-  <strong>An IoT-based real-time safety monitoring and emergency alert system for mountaineers</strong>
+  <strong>An off-grid IoT-based safety tracking and health monitoring system for mountain climbers and basecamp rescue teams.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge" alt="Project Status">
-  <img src="https://img.shields.io/badge/Platform-IoT-blue?style=for-the-badge" alt="IoT Platform">
-  <img src="https://img.shields.io/badge/Connectivity-WiFi%20%7C%20GSM-green?style=for-the-badge" alt="Connectivity">
-  <img src="https://img.shields.io/badge/Tracking-GPS%20%26%20Health-red?style=for-the-badge" alt="GPS Tracking">
-  <img src="https://img.shields.io/badge/University-Peradeniya-purple?style=for-the-badge" alt="University of Peradeniya">
+  <img src="https://img.shields.io/badge/Status-In%20Development-orange" alt="Project Status">
+  <img src="https://img.shields.io/badge/Platform-IoT-blue" alt="IoT Platform">
+  <img src="https://img.shields.io/badge/Communication-LoRa-green" alt="LoRa Communication">
+  <img src="https://img.shields.io/badge/Tracking-GPS-red" alt="GPS Tracking">
+  <img src="https://img.shields.io/badge/Web%20Dashboard-Flask-lightgrey" alt="Flask Dashboard">
+  <img src="https://img.shields.io/badge/Mobile%20Application-Flutter-blueviolet" alt="Flutter Mobile Application">
 </p>
 
 ---
 
-## 📑 Quick Navigation
+## Table of Contents
 
-| [Overview](#-overview) | [Architecture](#-system-architecture) | [Features](#-key-features) | [Hardware](#-hardware-components) | [Software](#-software-stack) | [Team](#-team) |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-
----
-
-## 🎯 Project Vision
-
-Mountain climbing and hiking represent some of humanity's most adventurous pursuits, but they also carry inherent risks. Remote mountain environments often have **poor communication coverage**, making it difficult for rescue teams to respond quickly to emergencies.
-
-This project addresses a critical gap in mountaineer safety by creating an **intelligent wearable IoT device** that continuously monitors climber health and location, enabling:
-- ✅ **Real-time health monitoring** of vital signs
-- ✅ **Accurate GPS location tracking** in remote areas
-- ✅ **Automated emergency alerts** via SMS with coordinates
-- ✅ **Live dashboard tracking** for basecamp or rescue teams
-
----
-
-## 🔍 Overview
-
-The **Mountain Climber Health and GPS Tracker** is an IoT-based safety system designed to support mountaineers, hikers, and rescue teams by providing real-time health and location monitoring.
-
-### Problem Statement
-
-When climbers move through remote mountain areas:
-- 📡 Communication is unreliable or unavailable
-- ⏱️ Emergency response times are critical
-- 🗺️ Rescue teams struggle to locate distressed climbers
-- ❤️ Health deterioration may go unnoticed
-
-### Solution
-
-Our system solves these challenges by:
-1. **Collecting** real-time health data (heart rate, temperature)
-2. **Tracking** precise GPS location coordinates
-3. **Transmitting** data via WiFi (dashboard) and GSM (emergency alerts)
-4. **Alerting** rescue teams with location during critical events
+1. [Overview](#overview)
+2. [Project Objectives](#project-objectives)
+3. [System Architecture](#system-architecture)
+4. [Key Features](#key-features)
+5. [Hardware Components](#hardware-components)
+6. [Software Stack](#software-stack)
+7. [Communication Flow](#communication-flow)
+8. [Web Dashboard](#web-dashboard)
+9. [Mobile Application](#mobile-application)
+10. [Getting Started](#getting-started)
+11. [Team](#team)
+12. [Links](#links)
+13. [Future Improvements](#future-improvements)
 
 ---
 
-## 🧭 System Architecture
+## Overview
 
+The **Mountain Climber IoT Safety Tracking System** is an embedded and IoT-based project developed to improve climber safety in remote mountain environments. The system focuses on real-time location tracking, emergency communication, and basic health monitoring support for climbers and basecamp operators.
+
+Mountain climbers and hikers often travel through areas where cellular network coverage is weak, unstable, or unavailable. In such situations, traditional mobile-based communication methods may not be reliable during emergencies. This project addresses that limitation by using **LoRa communication** as the primary long-range, low-power communication method between the climber device and the basecamp station.
+
+The system includes a portable climber device, a basecamp LoRa receiver node, a web-based monitoring dashboard, a Flutter mobile application, and a wearable armband planned for health monitoring. The climber device can collect GPS coordinates, transmit status updates to the basecamp, send SOS alerts, exchange short messages, and display essential information through an OLED display.
+
+---
+
+## Project Objectives
+
+The main objectives of this project are:
+
+* To design and implement an off-grid climber tracking system using LoRa communication.
+* To monitor climber location using GPS and display relevant information at the basecamp.
+* To provide emergency alert functionality through a hardware SOS button.
+* To support two-way short message communication between climber and basecamp.
+* To provide a web dashboard for basecamp operators to monitor climber status.
+* To develop a mobile application for climber-side monitoring and interaction.
+* To support future health monitoring through a wearable Bluetooth armband.
+
+---
+
+## System Architecture
+
+The proposed system consists of four main modules:
+
+| Module              | Description                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Main Climber Device | ESP32-based portable device responsible for GPS tracking, LoRa communication, OLED display output, button input, and mobile app connectivity. |
+| Wearable Armband    | ESP32-H2 based wearable unit planned for heart rate monitoring using a MAX30102 sensor and Bluetooth communication.                           |
+| Basecamp LoRa Node  | ESP32-based LoRa receiver/transmitter connected to the basecamp laptop through USB serial communication.                                      |
+| Web Dashboard       | Flask-based dashboard used by basecamp operators to monitor climber location, status, alerts, messages, and logs.                             |
+| Mobile Application  | Flutter-based companion application used by the climber for status viewing, messages, SOS control, and phone GPS fallback.                    |
+
+### High-Level System Diagram
+
+```text
+Wearable Armband
+ESP32-H2 + MAX30102
+        |
+        | Bluetooth
+        v
+Main Climber Device
+ESP32 + NEO-6M GPS + LoRa + OLED + Buttons
+        |
+        | LoRa
+        v
+Basecamp ESP32 LoRa Node
+        |
+        | USB Serial
+        v
+Laptop Web Dashboard
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    CLIMBER DEVICE                       │
-├─────────────────────────────────────────────────────────┤
-│  ❤️ Heart Rate Sensor  │  🌡️ Temperature Sensor         │
-│  📍 GPS Module         │  💾 Atmega328 Microcontroller  │
-└──────────┬──────────────────────────────┬───────────────┘
-           │                              │
-     ┌─────▼─────┐                  ┌─────▼──────┐
-     │   WiFi    │                  │    GSM     │
-     │ Connection│                  │  Module    │
-     └─────┬─────┘                  └─────┬──────┘
-           │                              │
-     ┌─────▼──────────────────────────────▼─────┐
-     │  DATA TRANSMISSION & COMMUNICATION LAYER  │
-     └─────┬──────────────────────────────┬─────┘
-           │                              │
-    ┌──────▼──────┐            ┌─────────▼────────┐
-    │   Web       │            │  Emergency SMS   │
-    │  Dashboard  │            │  Alert System    │
-    └─────┬──────��             └─────────┬────────┘
-          │                              │
-    ┌─────▼──────────────────────────────▼─────┐
-    │   MONITORING, ALERTING & RESCUE TEAM      │
-    │   Real-time Location & Health Status      │
-    └──────────────────────────────────────────┘
+
+---
+
+## Key Features
+
+| Feature                            | Description                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| GPS Location Tracking              | Tracks climber location using a NEO-6M GPS module.                                                      |
+| LoRa Communication                 | Enables long-range data transmission between climber and basecamp without relying on cellular networks. |
+| SOS Emergency Alert                | Allows the climber to send an emergency alert using a physical SOS button.                              |
+| Check-in Function                  | Allows the climber to quickly send an "I am OK" message to the basecamp.                                |
+| Distance and Direction Calculation | Calculates the distance and direction between the climber and the basecamp reference point.             |
+| Web Dashboard Monitoring           | Displays climber status, GPS information, alerts, messages, and session logs.                           |
+| Mobile Application Support         | Provides a companion interface for the climber to view status and send messages.                        |
+| Phone GPS Fallback                 | Allows the mobile phone GPS to be used when the NEO-6M GPS module has no valid fix.                     |
+| Two-Way Messaging                  | Supports short messages between the basecamp and climber.                                               |
+| Health Monitoring Support          | Supports future integration with a wearable armband for heart rate monitoring.                          |
+| Battery Monitoring Support         | Designed to support battery percentage display for both climber device and armband.                     |
+| Multi-Climber Support              | Dashboard structure supports multiple climber devices using unique climber IDs.                         |
+| Session Log and Export             | Maintains a session log that can be exported for review and documentation.                              |
+
+---
+
+## Hardware Components
+
+### Main Climber Device
+
+| Component                   | Purpose                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------ |
+| ESP32 Development Board     | Main controller for GPS, LoRa, WiFi access point, OLED display, and button inputs.         |
+| SX1278 / Ra-02 LoRa Module  | Provides long-range wireless communication with the basecamp node.                         |
+| NEO-6M GPS Module           | Provides latitude, longitude, and altitude information.                                    |
+| OLED Display                | Displays GPS status, distance, LoRa status, armband status, SOS status, and battery level. |
+| Push Buttons                | Provides physical SOS, Clear SOS, and Check-in controls.                                   |
+| Rechargeable Battery System | Powers the portable climber device during field operation.                                 |
+
+### Wearable Armband
+
+| Component                  | Purpose                                                          |
+| -------------------------- | ---------------------------------------------------------------- |
+| ESP32-H2 Development Board | Controller for the wearable armband and Bluetooth communication. |
+| MAX30102 Sensor            | Planned sensor for heart rate and pulse monitoring.              |
+| Rechargeable LiPo Battery  | Provides portable power for the armband.                         |
+| Power Switch               | Allows the armband to be turned on and off.                      |
+
+### Basecamp Node
+
+| Component                  | Purpose                                                     |
+| -------------------------- | ----------------------------------------------------------- |
+| ESP32 Development Board    | Acts as the basecamp LoRa bridge.                           |
+| SX1278 / Ra-02 LoRa Module | Receives climber telemetry and transmits basecamp messages. |
+| USB Serial Connection      | Connects the basecamp ESP32 to the laptop dashboard.        |
+| Laptop or PC               | Runs the Flask web dashboard.                               |
+
+---
+
+## Software Stack
+
+| Area                  | Technologies / Tools                         |
+| --------------------- | -------------------------------------------- |
+| Main Device Firmware  | Arduino C/C++ for ESP32                      |
+| Basecamp Firmware     | Arduino C/C++ for ESP32 LoRa bridge          |
+| Armband Firmware      | Arduino C/C++ for ESP32-H2                   |
+| Web Dashboard         | Python Flask                                 |
+| Mobile Application    | Flutter                                      |
+| Dashboard Frontend    | HTML, CSS, JavaScript                        |
+| Communication Methods | LoRa, WiFi AP, Bluetooth, USB Serial         |
+| GPS Processing        | NEO-6M GPS data parsing and filtering        |
+| Version Control       | Git and GitHub                               |
+| Documentation         | GitHub Pages with Jekyll-compatible Markdown |
+
+---
+
+## Communication Flow
+
+### Normal Tracking Mode
+
+```text
+NEO-6M GPS Module
+        |
+        v
+Main Climber ESP32
+        |
+        | LoRa telemetry packet
+        v
+Basecamp ESP32
+        |
+        | USB Serial
+        v
+Flask Web Dashboard
 ```
 
-### System Components
+### SOS Emergency Mode
 
-| Component | Role | Purpose |
-|-----------|------|---------|
-| **Wearable Device** | 🧑‍🦯 Data Collection | Gathers biometric and location data |
-| **Sensors** | 📊 Input | Heart rate, temperature, GPS coordinates |
-| **Microcontroller** | 🧠 Processing | Processes sensor data and decision-making |
-| **WiFi Module** | 📶 Live Monitoring | Sends real-time data to dashboard |
-| **GSM Module** | 📩 Emergency Alerts | Sends SMS during critical events |
-| **Web Dashboard** | 💻 Visualization | Real-time monitoring interface |
-| **Rescue Coordination** | 🚨 Response | Quick emergency response with coordinates |
+```text
+SOS Button Pressed
+        |
+        v
+Main Climber ESP32
+        |
+        | LoRa SOS packet
+        v
+Basecamp ESP32
+        |
+        v
+Web Dashboard Alert Panel
+```
 
----
+### Mobile GPS Fallback
 
-## ✨ Key Features
+```text
+Phone GPS
+        |
+        | WiFi AP
+        v
+Main Climber ESP32
+        |
+        | LoRa telemetry packet
+        v
+Basecamp Dashboard
+```
 
-### Core Monitoring
+### Armband Health Data Flow
 
-| Feature | Icon | Description | Benefit |
-|---------|------|-------------|---------|
-| **Heart Rate Monitoring** | ❤️ | Tracks climber's pulse in real-time | Early detection of health anomalies |
-| **Temperature Tracking** | 🌡️ | Monitors body and environmental temperature | Prevents hypothermia/heat exhaustion |
-| **GPS Location** | 📍 | Captures precise latitude/longitude | Accurate rescue team coordination |
-
-### Communication & Alerting
-
-| Feature | Icon | Description | Benefit |
-|---------|------|-------------|---------|
-| **WiFi Dashboard** | 📶 | Live web-based monitoring interface | Real-time basecamp tracking |
-| **GSM SMS Alerts** | 📩 | Sends emergency notifications | Works without internet in remote areas |
-| **Auto-Distress Signals** | 🚨 | Triggered by critical health events | Faster emergency response |
-| **Location Coordinates** | 🗺️ | Included in alert messages | Rescue teams know exact location |
-
-### Advanced Capabilities
-
-| Feature | Icon | Description |
-|---------|------|-------------|
-| **Multi-Alert Thresholds** | ⚠️ | Customizable health alert parameters |
-| **Low-Power Design** | 🔋 | Optimized battery consumption |
-| **Expandable Architecture** | 🧩 | Easy integration of additional sensors |
-| **Robust Communication** | 🔐 | Reliable WiFi & GSM protocols |
-
----
-
-## 🔩 Hardware Components
-
-### Core Processing
-
-| Component | Specifications | Purpose |
-|-----------|----------------|---------|
-| **Atmega328P Microcontroller** | 8-bit, 16MHz | Main processing unit, sensor data handling |
-| **Power Management Module** | 5V/3.3V Regulator | Stable power distribution |
-
-### Sensors & Inputs
-
-| Sensor | Model (Example) | Output | Purpose |
-|--------|-----------------|--------|---------|
-| **Heart Rate Sensor** | Pulse Sensor / MAX30100 | PPM (Pulses Per Minute) | Cardiac monitoring |
-| **Temperature Sensor** | DHT22 / DS18B20 | °C/°F | Body & environment temperature |
-| **GPS Module** | Neo-6M / Neo-8M | Latitude, Longitude, Altitude | Location tracking |
-
-### Communication Modules
-
-| Module | Technology | Range | Use Case |
-|--------|------------|-------|----------|
-| **WiFi Module** | ESP8266 / WiFi Shield | ~100m (indoor) | Dashboard connectivity |
-| **GSM Module** | SIM800L / SIM900 | Global (cellular) | Emergency SMS alerts |
-
-### Power & Supporting Components
-
-| Component | Capacity/Type | Function |
-|-----------|---------------|------------|
-| **Battery** | 3000-5000mAh Li-Po | Portable power source |
-| **Charging Module** | Micro-USB/USB-C | Safe battery charging |
-| **PCB** | Custom Design | Component integration |
-| **Enclosure** | Weather-sealed housing | Physical protection |
+```text
+MAX30102 Sensor
+        |
+        v
+ESP32-H2 Armband
+        |
+        | Bluetooth
+        v
+Main Climber Device / Mobile Application
+        |
+        v
+Dashboard and Mobile Interface
+```
 
 ---
 
-## 👨‍💻 Software Stack
+## Web Dashboard
 
-### Embedded Development
+The web dashboard is intended for basecamp operators or mountain rangers. It provides a centralized monitoring interface for climber tracking and emergency response.
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Language** | C/C++ | Microcontroller firmware development |
-| **IDE** | Arduino IDE / PlatformIO | Code compilation & upload |
-| **Libraries** | Arduino Core, Sensor Libraries | Hardware abstraction & sensor APIs |
-| **Protocols** | UART, SPI, I2C | Sensor & module communication |
-
-### IoT & Connectivity
-
-| Component | Technology | Role |
-|-----------|-----------|------|
-| **WiFi Communication** | HTTP/HTTPS | Dashboard data transmission |
-| **GSM Protocol** | AT Commands | SMS emergency alerts |
-| **Data Format** | JSON | Structured data exchange |
-| **Server Backend** | Node.js / Python (optional) | Data processing & storage |
-
-### Monitoring & Alerting
-
-| Function | Implementation | Details |
-|----------|----------------|---------|
-| **Health Monitoring** | Real-time threshold checks | Alerts triggered on anomalies |
-| **Location Tracking** | GPS coordinate parsing | Coordinates included in messages |
-| **Alert Transmission** | Asynchronous messaging | Non-blocking alert dispatch |
-| **Data Logging** | Local storage | Sensor data history |
-
-### Web Dashboard
-
-| Aspect | Technology | Features |
-|--------|-----------|----------|
-| **Frontend** | HTML5, CSS3, JavaScript | Real-time visualization |
-| **Data Visualization** | Charts.js / D3.js | Heart rate, temperature graphs |
-| **Mapping** | Google Maps API / Leaflet | Live location tracking |
-| **Backend** | Node.js / Python Flask | API endpoints for data |
-| **Database** | Firebase / MongoDB | Cloud data storage |
+| Function                 | Description                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| Multi-Climber Monitoring | Displays climber cards for each unique climber device ID.                                   |
+| GPS Status Display       | Shows whether location data is from NEO-6M, phone GPS, last known location, or unavailable. |
+| Distance Map             | Displays basecamp point, climber point, direction, distance, and movement path.             |
+| Alert Panel              | Highlights SOS, GPS lost, offline climber, and low battery conditions.                      |
+| Conversation Panel       | Supports short message communication between basecamp and climber.                          |
+| Session Log              | Records SOS events, messages, GPS updates, and basecamp actions.                            |
+| Export Function          | Allows session log export for documentation and review.                                     |
+| Basecamp GPS Setup       | Allows operators to manually enter and send basecamp GPS coordinates.                       |
 
 ---
 
-## 🚀 Getting Started
+## Mobile Application
 
-### Quick Links
+The Flutter mobile application acts as a companion interface for the climber. It communicates with the main climber device through the ESP32 WiFi access point.
 
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker" target="_blank">
-        <strong>📂 GitHub Repository</strong><br>
-        Source code & documentation
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://cepdnaclk.github.io/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker" target="_blank">
-        <strong>🌐 Project Page</strong><br>
-        GitHub Pages site
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="http://www.ce.pdn.ac.lk/" target="_blank">
-        <strong>🏫 Department</strong><br>
-        Computer Engineering
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://eng.pdn.ac.lk/" target="_blank">
-        <strong>🎓 University</strong><br>
-        University of Peradeniya
-      </a>
-    </td>
-  </tr>
-</table>
-
-### Documentation Structure
-
-Our comprehensive documentation includes:
-
-| Section | Focus | Content |
-|---------|-------|---------|
-| 📋 **Project Overview** | Vision & Goals | Problem statement, objectives, scope |
-| 🔧 **Hardware Design** | Physical Build | Sensor selection, circuit diagrams, wiring |
-| 💾 **Firmware** | Embedded Code | Microcontroller programming, sensor drivers |
-| 🌐 **Dashboard** | Web Interface | Frontend code, data visualization |
-| 🧪 **Testing** | Validation | Test procedures, results, performance metrics |
-| 📊 **Results** | Outputs | Graphs, screenshots, final observations |
-| 🔮 **Future Work** | Improvements | Roadmap, enhancements, scalability |
+| Function             | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| Device Status View   | Displays GPS, LoRa, armband, SOS, and battery status.                           |
+| Distance Information | Shows distance and direction from the basecamp.                                 |
+| SOS Control          | Allows the climber to trigger an SOS alert from the mobile app.                 |
+| Quick Messages       | Provides predefined messages such as "I am OK", "Need help", and "Low battery". |
+| Phone GPS Fallback   | Sends phone GPS data to the climber device when NEO-6M GPS is unavailable.      |
+| Armband Status       | Displays Bluetooth armband and heart sensor status.                             |
+| Conversation View    | Shows messages exchanged between the climber and the basecamp.                  |
 
 ---
 
-## 👥 Team
+## Getting Started
 
-<table align="center">
-  <tr>
-    <th>Registration</th>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Role</th>
-  </tr>
-  <tr>
-    <td><strong>e21198</strong></td>
-    <td>Sahan Jayasundara</td>
-    <td><a href="mailto:e21198@eng.pdn.ac.lk">e21198@eng.pdn.ac.lk</a></td>
-    <td>Hardware & Sensors</td>
-  </tr>
-  <tr>
-    <td><strong>e21328</strong></td>
-    <td>Prabash Rathnayaka</td>
-    <td><a href="mailto:e21328@eng.pdn.ac.lk">e21328@eng.pdn.ac.lk</a></td>
-    <td>Firmware & MCU</td>
-  </tr>
-  <tr>
-    <td><strong>e21353</strong></td>
-    <td>Pasan Sandeep</td>
-    <td><a href="mailto:e21353@eng.pdn.ac.lk">e21353@eng.pdn.ac.lk</a></td>
-    <td>Dashboard & Communication</td>
-  </tr>
-</table>
+This repository contains firmware, dashboard code, mobile application code, and documentation related to the Mountain Climber IoT Safety Tracking System.
+
+### Repository
+
+[View Project Repository](https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"}
+
+### Project Page
+
+[Open Project Page](https://cepdnaclk.github.io/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"}
+
+### Suggested Repository Documentation
+
+| Section                | Description                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Project Overview       | Problem definition, motivation, and proposed solution.                       |
+| Hardware Design        | Component selection, wiring, device structure, and enclosure design.         |
+| Firmware               | ESP32 firmware for the climber device, basecamp node, and armband.           |
+| Web Dashboard          | Flask dashboard setup, interface, and monitoring features.                   |
+| Mobile Application     | Flutter application setup and usage instructions.                            |
+| Communication Protocol | LoRa packet formats, message flow, and status codes.                         |
+| Testing and Results    | GPS testing, LoRa communication testing, dashboard testing, and SOS testing. |
+| Future Improvements    | Planned improvements and possible extensions.                                |
 
 ---
 
-## 🔗 External Resources
+## Team
 
-| Resource | Link | Description |
-|----------|------|-------------|
-| **GitHub Repository** | [View Repository](https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"} | Complete source code & docs |
-| **GitHub Pages** | [Open Project Page](https://cepdnaclk.github.io/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"} | Hosted project website |
-| **Department Website** | [Computer Engineering Dept](http://www.ce.pdn.ac.lk/){:target="_blank"} | Faculty information |
-| **University Website** | [University of Peradeniya](https://eng.pdn.ac.lk/){:target="_blank"} | University portal |
-
----
-
-## 📚 Documentation Sections
-
-Navigate through our detailed documentation:
-
-- **[Hardware Design](./docs/hardware/)** - Sensor specifications, circuit diagrams, PCB layout
-- **[Firmware Documentation](./docs/firmware/)** - Code architecture, sensor drivers, communication protocols
-- **[Dashboard Guide](./docs/dashboard/)** - Web interface features, data visualization
-- **[Testing & Results](./docs/testing/)** - Test cases, performance metrics, validation results
-- **[Future Improvements](./docs/improvements/)** - Planned enhancements, scalability roadmap
+| Registration No. | Name               | Email                                               |
+| ---------------- | ------------------ | --------------------------------------------------- |
+| e21198           | Sahan Jayasundara  | [e21198@eng.pdn.ac.lk](mailto:e21198@eng.pdn.ac.lk) |
+| e21328           | Prabash Rathnayaka | [e21328@eng.pdn.ac.lk](mailto:e21328@eng.pdn.ac.lk) |
+| e21353           | Pasan Sandeep      | [e21353@eng.pdn.ac.lk](mailto:e21353@eng.pdn.ac.lk) |
 
 ---
 
-## 🎓 Academic Context
+## Links
 
-This project is developed as part of the **3rd Year Undergraduate Engineering Project** at the:
-
-- **Faculty**: Engineering
-- **Department**: Computer Engineering  
-- **University**: University of Peradeniya
-- **Year**: 2021
-
-The project aims to design and implement a practical IoT-based safety solution that improves climber monitoring, enables rapid emergency response, and enhances rescue coordination in remote mountain environments.
-
-### Project Objectives
-
-✅ Design an integrated IoT device for climber safety  
-✅ Implement real-time health and location monitoring  
-✅ Develop emergency alert system with GPS coordinates  
-✅ Create user-friendly monitoring dashboard  
-✅ Test and validate system performance  
-✅ Document comprehensive technical specifications  
+| Resource                           | Link                                                                                                                 |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| GitHub Repository                  | [Project Repository](https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"} |
+| GitHub Pages Site                  | [Project Page](https://cepdnaclk.github.io/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker){:target="_blank"}        |
+| Department of Computer Engineering | [Department Website](http://www.ce.pdn.ac.lk/){:target="_blank"}                                                     |
+| University of Peradeniya           | [Faculty of Engineering](https://eng.pdn.ac.lk/){:target="_blank"}                                                   |
 
 ---
 
-## 📞 Contact & Support
+## Academic Context
 
-For questions, suggestions, or contributions:
+This project is developed as part of the undergraduate engineering project work at the **Department of Computer Engineering, Faculty of Engineering, University of Peradeniya**.
 
-- **GitHub Issues**: [Report a bug or suggest a feature](https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker/issues){:target="_blank"}
-- **Email Team**: Reach out to any team member via email (see team section above)
-- **Project Discussion**: Start a discussion on GitHub Discussions
+The objective of the project is to design and implement a practical off-grid IoT safety system that can improve climber tracking, emergency communication, and rescue coordination in remote mountain environments.
+
+---
+
+## Future Improvements
+
+Planned improvements include:
+
+* Improved battery monitoring and charging system.
+* Compact and weather-resistant enclosure design.
+* Extended LoRa range testing with improved antennas.
+* Larger multi-climber deployment.
+* More accurate heart rate monitoring using the MAX30102 sensor.
+* Optional online map support when internet is available at basecamp.
+* Improved session reporting and rescue event export.
+* Solar-powered LoRa repeater support for extended range.
 
 ---
 
 <p align="center">
-  <strong>🏔️ Mountain Climber Health and GPS Tracker</strong><br>
-  <em>Enhancing Safety, Saving Lives</em><br><br>
-  Department of Computer Engineering • Faculty of Engineering<br>
-  University of Peradeniya 🎓
+  <strong>Mountain Climber IoT Safety Tracking System</strong><br>
+  Department of Computer Engineering<br>
+  Faculty of Engineering, University of Peradeniya
 </p>
-
-<p align="center">
-  <strong>Version 1.0</strong> | Last Updated: June 2026<br>
-  <a href="https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker/blob/main/LICENSE" target="_blank">License</a> • 
-  <a href="https://github.com/cepdnaclk/e21-3yp-Mountain-Climber-Health-and-GPS-Tracker" target="_blank">GitHub</a>
-</p>
-
----
