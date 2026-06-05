@@ -8,6 +8,7 @@ const portalLinks = [
   { label: "Basecamp Software", href: "/portal/basecamp-software" },
   { label: "Mobile App", href: "/portal/mobile-app" },
   { label: "Firmware Updater", href: "/portal/firmware" },
+  { label: "Repeater Node", href: "/portal/repeater" },
   { label: "Setup Workflow", href: "/portal/setup" },
   { label: "Documentation", href: "/portal/docs" },
   { label: "Releases", href: "/portal/releases" },
