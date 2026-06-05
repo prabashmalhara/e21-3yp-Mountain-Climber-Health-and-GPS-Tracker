@@ -6,6 +6,7 @@ const portalLinks = [
   { label: "Register Device", href: "/portal/register-device" },
   { label: "Downloads", href: "/portal/downloads" },
   { label: "Basecamp Software", href: "/portal/basecamp-software" },
+  { label: "Mobile App", href: "/portal/mobile-app" },
   { label: "Firmware Updater", href: "/portal/firmware" },
   { label: "Setup Workflow", href: "/portal/setup" },
   { label: "Documentation", href: "/portal/docs" },
