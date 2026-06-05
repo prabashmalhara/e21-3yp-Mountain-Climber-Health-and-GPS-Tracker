@@ -1,71 +1,17 @@
-import PortalLayout from "@/components/PortalLayout";
+"use client";
 
-const releases = [
-  {
-    version: "v0.2-current-lora-system",
-    date: "Current Development Stage",
-    type: "Stable Prototype Tag",
-    status: "Recommended Backup",
-    summary:
-      "Current stable LoRa-based system before major website, packaging, and repeater-node development.",
-    items: [
-      "Climber ESP32 firmware under development",
-      "Basecamp ESP32 LoRa node under development",
-      "Local Flask basecamp dashboard prototype available",
-      "Flutter mobile app under development",
-      "Armband ESP32-H2 prototype module available",
-      "Repeater node planned as next hardware stage",
-    ],
-  },
-  {
-    version: "v0.3-repeater-prototype",
-    date: "Planned",
-    type: "Firmware / Hardware Update",
-    status: "Next Stage",
-    summary:
-      "Planned release for first LoRa repeater-node prototype and dashboard support for direct/repeater packet path.",
-    items: [
-      "Repeater ESP32 + LoRa firmware",
-      "Duplicate packet filtering",
-      "Packet forwarding from climber to basecamp",
-      "Future dashboard field: direct or via repeater",
-      "RSSI/SNR monitoring improvement",
-    ],
-  },
-  {
-    version: "v0.4-package-prototype",
-    date: "Planned",
-    type: "Software Packaging",
-    status: "Future Stage",
-    summary:
-      "Planned release for packaging the local Flask basecamp dashboard into an installable software package.",
-    items: [
-      "Basecamp software installer prototype",
-      "Local database/package folder structure",
-      "Simplified startup flow",
-      "COM port detection improvement",
-      "Setup documentation update",
-    ],
-  },
-  {
-    version: "v1.0-production-beta",
-    date: "Future",
-    type: "Production Beta",
-    status: "Long-Term Goal",
-    summary:
-      "Future beta release for a complete product package with firmware updater, Android APK, installer, guides, and customer portal downloads.",
-    items: [
-      "Basecamp installer",
-      "Firmware updater",
-      "Climber firmware package",
-      "Basecamp firmware package",
-      "Armband firmware package",
-      "Repeater firmware package",
-      "Flutter APK",
-      "PDF setup guides",
-    ],
-  },
-];
+import { useEffect, useState } from "react";
+import PortalLayout from "@/components/PortalLayout";
+import { supabase } from "@/lib/supabaseClient";
+
+type ReleaseNote = {
+  id: string;
+  version: string;
+  title: string;
+  description: string | null;
+  status: string;
+  created_at: string;
+};
 
 const components = [
   {
@@ -100,11 +46,72 @@ const components = [
   },
 ];
 
+function getReleaseItems(release: ReleaseNote) {
+  if (release.version === "v0.2-current-lora-system") {
+    return [
+      "NEO-6M GPS tracking",
+      "Phone GPS fallback",
+      "LoRa-based off-grid communication",
+      "SOS from hardware button and mobile app",
+      "Two-way messaging",
+      "Local Flask dashboard",
+      "Flutter mobile app",
+      "Session logs and export support",
+    ];
+  }
+
+  if (release.version === "v0.3-repeater-node") {
+    return [
+      "Solar LoRa repeater node planning",
+      "Packet forwarding",
+      "Duplicate packet filtering",
+      "Hop count and repeater ID support",
+      "Dashboard signal path update",
+      "Field LoRa range testing",
+    ];
+  }
+
+  return [
+    "Product version record",
+    "Software and firmware tracking",
+    "Package management support",
+    "Portal release documentation",
+  ];
+}
+
 export default function ReleasesPage() {
+  const [releases, setReleases] = useState<ReleaseNote[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function loadReleases() {
+      setIsLoading(true);
+      setErrorMessage("");
+
+      const { data, error } = await supabase
+        .from("release_notes")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      setIsLoading(false);
+
+      if (error) {
+        console.error("Release notes load error:", error);
+        setErrorMessage("Could not load release note records.");
+        return;
+      }
+
+      setReleases(data ?? []);
+    }
+
+    loadReleases();
+  }, []);
+
   return (
     <PortalLayout
       title="Release Notes"
-      description="This page tracks planned and current software/firmware releases for the MountainSafety product package."
+      description="This page reads release note records from Supabase and tracks planned/current software and firmware milestones."
     >
       <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
         <h2 className="text-2xl font-bold">Version Tracking Strategy</h2>
@@ -139,43 +146,67 @@ export default function ReleasesPage() {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6">
-        {releases.map((release) => (
-          <div
-            key={release.version}
-            className="rounded-2xl border border-white/10 bg-white/5 p-6"
-          >
-            <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
-              <div>
-                <p className="text-sm font-semibold text-emerald-300">
-                  {release.type}
-                </p>
-                <h2 className="mt-2 text-2xl font-bold">{release.version}</h2>
-                <p className="mt-2 text-sm text-slate-400">{release.date}</p>
+      {isLoading && (
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+          Loading release note records...
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6 text-orange-300">
+          {errorMessage}
+        </div>
+      )}
+
+      {!isLoading && !errorMessage && releases.length === 0 && (
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+          No release note records found yet.
+        </div>
+      )}
+
+      {!isLoading && !errorMessage && releases.length > 0 && (
+        <div className="mt-8 grid gap-6">
+          {releases.map((release) => (
+            <div
+              key={release.id}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+            >
+              <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+                <div>
+                  <p className="text-sm font-semibold text-emerald-300">
+                    Product Release
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold">
+                    {release.version}
+                  </h2>
+                  <p className="mt-2 text-lg font-semibold text-slate-200">
+                    {release.title}
+                  </p>
+                </div>
+
+                <span className="w-fit rounded-full bg-white/10 px-4 py-2 text-sm text-slate-300">
+                  {release.status}
+                </span>
               </div>
 
-              <span className="w-fit rounded-full bg-white/10 px-4 py-2 text-sm text-slate-300">
-                {release.status}
-              </span>
-            </div>
+              <p className="mt-4 max-w-4xl leading-7 text-slate-300">
+                {release.description ?? "No release description added yet."}
+              </p>
 
-            <p className="mt-4 max-w-4xl leading-7 text-slate-300">
-              {release.summary}
-            </p>
-
-            <div className="mt-5 grid gap-3 md:grid-cols-2">
-              {release.items.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300"
-                >
-                  {item}
-                </div>
-              ))}
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {getReleaseItems(release).map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </PortalLayout>
   );
 }
