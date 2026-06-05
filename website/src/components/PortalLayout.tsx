@@ -3,6 +3,7 @@ import Link from "next/link";
 const portalLinks = [
   { label: "Dashboard", href: "/portal/dashboard" },
   { label: "Devices", href: "/portal/devices" },
+  { label: "Register Device", href: "/portal/register-device" },
   { label: "Downloads", href: "/portal/downloads" },
   { label: "Setup Workflow", href: "/portal/setup" },
   { label: "Documentation", href: "/portal/docs" },
