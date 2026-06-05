@@ -38,6 +38,16 @@ const features = [
       "Battery level support helps basecamp operators understand device readiness during outdoor activity.",
   },
   {
+    title: "Local Flask Dashboard",
+    description:
+    "The actual live monitoring dashboard runs locally on the basecamp laptop and communicates with the basecamp ESP32 through USB serial.",
+  },
+  {
+    title: "ESP32 Wi-Fi API",
+    description:
+    "The Flutter app connects to the climber ESP32 local Wi-Fi API to send phone GPS, BPM, SOS, and message data.",
+  },
+  {
     title: "Repeater Node Expansion",
     description:
       "The next development stage is a LoRa repeater node to improve range in mountain environments.",
@@ -57,10 +67,11 @@ export default function FeaturesPage() {
             Core functions for safer mountain field operations.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            The current product prototype focuses on GPS tracking, LoRa
-            communication, SOS alerts, messaging, a basecamp dashboard, and a
-            mobile companion app. Temperature sensing is not included in the
-            current product scope.
+                        The current product prototype focuses on GPS tracking, LoRa
+            communication, SOS alerts, short messaging, a local Flask basecamp
+            dashboard, a Flutter mobile companion app, and ESP32 firmware modules.
+            Temperature sensing is not included in the current product scope.
+            The next major hardware stage is the LoRa repeater node.
           </p>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">

@@ -47,9 +47,11 @@ export default function HowItWorksPage() {
             From climber device to basecamp dashboard.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            The system is designed as an offline-first safety network. The
-            basecamp dashboard should continue working locally even when
-            internet access is not available.
+            The system is designed as an offline-first safety network. The live
+            basecamp monitoring dashboard runs locally using Flask and USB serial
+            communication with the basecamp ESP32 LoRa node. The online website is
+            only a product website and future customer portal prototype at this
+            stage.
           </p>
 
           <div className="mt-14 grid gap-6">
@@ -74,8 +76,9 @@ export default function HowItWorksPage() {
           <div className="mt-14 rounded-3xl border border-emerald-400/30 bg-emerald-400/10 p-6">
             <h2 className="text-2xl font-bold">System data flow</h2>
             <p className="mt-4 leading-7 text-slate-300">
-              Climber Device → LoRa → Optional Repeater Node → Basecamp LoRa
-              Node → USB Serial → Local Dashboard → Optional Future Cloud Portal
+              Armband ESP32-H2 → BLE Advertisement → Flutter App / Climber ESP32 →
+              HTTP Wi-Fi API → Climber ESP32 → LoRa → Optional Repeater Node →
+              Basecamp ESP32 LoRa Node → USB Serial → Local Flask Basecamp Dashboard
             </p>
           </div>
         </section>

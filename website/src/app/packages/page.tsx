@@ -6,12 +6,12 @@ const packages = [
     title: "Basic Basecamp Kit",
     badge: "Prototype Target",
     items: [
-      "1 × Basecamp LoRa Gateway",
-      "1 × Climber Tracking Device",
-      "Basecamp Dashboard Software",
-      "Flutter Mobile Companion App",
-      "Quick Start Documentation",
-    ],
+        "1 × Basecamp ESP32 LoRa Gateway",
+        "Multiple Climber ESP32 Devices",
+        "1 × LoRa Repeater Node",
+        "Firmware Updater Package",
+        "Device Registration Support",
+      ],
   },
   {
     title: "Ranger Team Kit",
@@ -50,11 +50,11 @@ export default function PackagesPage() {
             Hardware and software packages for basecamp users.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            The final product should be delivered as an easy-to-install safety
-            kit, not as raw source code. Users should be able to download the
-            installer, connect the device, and start monitoring with minimum
-            technical knowledge.
-          </p>
+            The final product should be delivered as an easy-to-install safety kit,
+            not as raw source code. The basecamp user should receive a packaged
+            local dashboard installer, firmware updater, ESP32 firmware packages,
+            Flutter mobile APK, setup guides, and optional repeater support.
+            </p>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
             {packages.map((pack) => (
