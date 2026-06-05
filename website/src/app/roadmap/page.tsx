@@ -3,98 +3,125 @@ import Footer from "@/components/Footer";
 
 const roadmap = [
   {
-    phase: "Phase 1",
-    title: "Current LoRa Prototype",
-    status: "Current Stage",
+    phase: "Current Stable Version",
+    title: "Working LoRa Climber Safety System",
+    status: "Completed / Stable",
     description:
-      "The system currently focuses on climber GPS tracking, SOS alerts, short messages, Flutter mobile app communication, LoRa data transfer, and a local Flask basecamp dashboard.",
+      "The system now works as a LoRa-based off-grid climber tracking and communication prototype with GPS, SOS, two-way messaging, dashboard monitoring, mobile app support, and session logs.",
     items: [
-      "Climber ESP32 firmware",
-      "Basecamp ESP32 LoRa firmware",
-      "Flutter mobile companion app",
-      "Local Flask basecamp dashboard",
-      "USB serial connection between basecamp ESP32 and laptop",
-      "SOS, messages, GPS, battery, RSSI/SNR, and event logs",
+      "NEO-6M GPS tracking",
+      "Phone GPS fallback",
+      "LoRa communication",
+      "Hardware and mobile SOS",
+      "Clear SOS workflow",
+      "Check-in / I am OK button",
+      "Two-way messaging",
+      "OLED device status",
+      "Flask dashboard",
+      "Flutter mobile app",
+      "Session log export",
+      "GPS jitter filtering",
     ],
   },
   {
-    phase: "Phase 2",
-    title: "LoRa Repeater Node",
-    status: "Next Development Stage",
+    phase: "Next Development Stage",
+    title: "Solar LoRa Repeater Node",
+    status: "Next",
     description:
-      "The next hardware and firmware stage is a repeater node that extends LoRa range between climber devices and the basecamp gateway.",
+      "The next hardware and firmware stage is a repeater node to extend LoRa communication range in mountainous terrain.",
     items: [
       "Repeater ESP32 + LoRa module",
       "Packet forwarding",
       "Duplicate packet filtering",
-      "Hop count and repeater ID support",
-      "Dashboard support for direct/repeater path",
-      "Outdoor battery enclosure planning",
+      "Hop count and repeater ID",
+      "Signal path shown on dashboard",
+      "Battery/solar power planning",
+      "Outdoor enclosure planning",
     ],
   },
   {
-    phase: "Phase 3",
-    title: "Software Packaging",
+    phase: "Hardware Improvement",
+    title: "Product-Level Device Design",
     status: "Planned",
     description:
-      "The local Flask basecamp dashboard and firmware files will be prepared as user-friendly software packages for non-technical basecamp users.",
+      "The current prototype should be improved with better battery monitoring, compact enclosure design, reliable wiring/PCB planning, and field-ready packaging.",
     items: [
-      "Basecamp Windows installer",
-      "Firmware updater tool",
-      "Firmware .bin package exports",
-      "Flutter Android APK",
-      "Setup guides and troubleshooting guides",
-      "Versioned release files",
+      "Real battery percentage monitoring",
+      "Compact enclosure",
+      "Improved wiring or custom PCB",
+      "Field LoRa range testing",
+      "Weather-resistant design",
+      "Stable antenna mounting",
     ],
   },
   {
-    phase: "Phase 4",
-    title: "Customer Portal",
-    status: "Prototype Started",
+    phase: "Health Monitoring Upgrade",
+    title: "MAX30102 Armband Integration",
+    status: "Planned",
     description:
-      "The online website and portal prototype will become the place where future users register, manage devices, download software, read documentation, and request support.",
+      "The ESP32-H2 armband is prepared for future health monitoring using the MAX30102 heart-rate sensor.",
     items: [
-      "Basecamp account registration",
-      "Device registration",
-      "Download center",
-      "Documentation center",
-      "Release notes",
-      "Support ticket system",
+      "MAX30102 heart-rate integration",
+      "BPM forwarding",
+      "Armband battery reporting",
+      "Sensor status reporting",
+      "Mobile app health status",
+      "Dashboard health field support",
     ],
   },
   {
-    phase: "Phase 5",
-    title: "Production Beta",
-    status: "Future Goal",
+    phase: "Production Packaging",
+    title: "Installer, APK, Firmware Packages",
+    status: "Future",
     description:
-      "The long-term goal is to provide a complete hardware and software kit for field testing with mountain guides, rescue teams, or basecamp operators.",
+      "The system should later be packaged for non-technical basecamp users as installers, APK files, firmware binaries, setup guides, and portal downloads.",
     items: [
-      "Basecamp safety kit",
+      "Basecamp software installer",
+      "Flutter APK package",
+      "Firmware updater",
+      "Firmware .bin releases",
+      "Setup documentation",
+      "Troubleshooting guides",
+      "Device registration portal",
+    ],
+  },
+  {
+    phase: "Larger Deployment",
+    title: "Multi-Climber Field Deployment",
+    status: "Future",
+    description:
+      "After repeater and packaging improvements, the system can be tested with multiple climber devices and larger field deployment scenarios.",
+    items: [
       "Multiple climber devices",
-      "Repeater-supported range testing",
-      "Production enclosure design",
-      "Installer-based setup",
-      "Customer support workflow",
+      "Multi-climber dashboard testing",
+      "Repeater-supported route testing",
+      "Ranger/rescue team testing",
+      "Session report review",
+      "Production beta feedback",
     ],
   },
 ];
 
 const currentScope = [
-  "GPS-based climber tracking",
-  "LoRa climber-to-basecamp communication",
-  "SOS alerts",
-  "Two-way short messages",
+  "Working LoRa-based climber tracking",
+  "NEO-6M GPS + phone GPS fallback",
+  "SOS from hardware and mobile app",
+  "Clear SOS from hardware and dashboard",
+  "Check-in / I am OK button",
+  "Two-way messaging",
+  "Flask web dashboard",
   "Flutter mobile app",
-  "Local Flask basecamp dashboard",
-  "ESP32-H2 armband prototype module",
-  "Repeater node planned next",
+  "Multi-climber-ready dashboard",
+  "Session log export",
 ];
 
-const notCurrentScope = [
-  "Cloud live monitoring is not production-ready yet",
-  "Temperature sensor is not part of the current product scope",
-  "Payment/subscription system is not required now",
-  "Arduino IDE workflow should not be used by final customers",
+const futureScope = [
+  "Real battery percentage monitoring",
+  "MAX30102 heart-rate integration",
+  "Compact enclosure",
+  "Field LoRa range testing",
+  "Solar LoRa repeater",
+  "Larger multi-climber deployment",
 ];
 
 export default function RoadmapPage() {
@@ -109,21 +136,21 @@ export default function RoadmapPage() {
           </p>
 
           <h1 className="mt-4 max-w-5xl text-4xl font-bold sm:text-6xl">
-            From working LoRa prototype to production-ready safety kit.
+            From stable LoRa prototype to field-ready safety product.
           </h1>
 
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-300">
-            This roadmap shows the planned development path for the Mountain
-            Climber IoT Safety Tracking System. The current focus is to keep the
-            field system offline-first while building the online website and
-            portal as a professional product packaging layer.
+            The project has moved from an early concept into a working LoRa-based
+            off-grid climber tracking and safety communication system. The next
+            focus is repeater-node development, product-level hardware
+            improvement, and production packaging.
           </p>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-2">
             <div className="rounded-3xl border border-emerald-400/30 bg-emerald-400/10 p-6">
-              <h2 className="text-2xl font-bold">Current Product Scope</h2>
+              <h2 className="text-2xl font-bold">Current Stable Scope</h2>
 
-              <div className="mt-5 grid gap-3">
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
                 {currentScope.map((item) => (
                   <div
                     key={item}
@@ -135,11 +162,11 @@ export default function RoadmapPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="text-2xl font-bold">Not Current Scope</h2>
+            <div className="rounded-3xl border border-orange-400/30 bg-orange-400/10 p-6">
+              <h2 className="text-2xl font-bold">Future Improvements</h2>
 
-              <div className="mt-5 grid gap-3">
-                {notCurrentScope.map((item) => (
+              <div className="mt-5 grid gap-3 md:grid-cols-2">
+                {futureScope.map((item) => (
                   <div
                     key={item}
                     className="rounded-xl border border-white/10 bg-slate-950 px-4 py-3 text-sm text-slate-300"
@@ -188,12 +215,12 @@ export default function RoadmapPage() {
           </div>
 
           <div className="mt-12 rounded-3xl bg-white p-6 text-slate-950">
-            <h2 className="text-2xl font-bold">Recommended Next Technical Step</h2>
+            <h2 className="text-2xl font-bold">Recommended Immediate Step</h2>
             <p className="mt-3 leading-7 text-slate-600">
-              Freeze the current stable LoRa system, then start repeater-node
-              firmware and packet-format development. After the repeater works,
-              update the local Flask dashboard to show whether packets arrived
-              directly or through a repeater.
+              Freeze the current stable LoRa version in GitHub, then start the
+              solar LoRa repeater node in a separate development branch. After
+              repeater communication works, update the dashboard to show signal
+              path, repeater ID, hop count, and RSSI/SNR diagnostics.
             </p>
           </div>
         </section>
