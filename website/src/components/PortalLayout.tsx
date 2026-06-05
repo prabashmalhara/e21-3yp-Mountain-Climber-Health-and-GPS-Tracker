@@ -4,6 +4,7 @@ const portalLinks = [
   { label: "Dashboard", href: "/portal/dashboard" },
   { label: "Devices", href: "/portal/devices" },
   { label: "Downloads", href: "/portal/downloads" },
+  { label: "Setup Workflow", href: "/portal/setup" },
   { label: "Documentation", href: "/portal/docs" },
   { label: "Releases", href: "/portal/releases" },
   { label: "Support", href: "/portal/support" },
