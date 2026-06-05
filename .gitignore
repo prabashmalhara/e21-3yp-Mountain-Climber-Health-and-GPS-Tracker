@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Flutter
+.dart_tool/
+build/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android / Gradle
+.gradle/
+local.properties
+*.apk
+*.aab
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Arduino temporary files
+*.tmp
+*.bak
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
