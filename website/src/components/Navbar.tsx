@@ -38,6 +38,10 @@ export default function Navbar() {
               Register
             </Link>
 
+            <Link href="/logout" className="hover:text-white">
+              Logout
+            </Link>
+
             <Link
               href="/portal"
               className="rounded-xl bg-emerald-400 px-4 py-2 font-semibold text-slate-950 hover:bg-emerald-300"
