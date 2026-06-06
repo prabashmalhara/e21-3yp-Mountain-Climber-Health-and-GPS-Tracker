@@ -24,19 +24,27 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
-          {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-white">
-              {link.label}
-            </Link>
-          ))}
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="hover:text-white">
+                {link.label}
+              </Link>
+            ))}
 
-          <Link
-            href="/portal"
-            className="rounded-xl bg-emerald-400 px-4 py-2 font-semibold text-slate-950 hover:bg-emerald-300"
-          >
-            Portal Prototype
-          </Link>
-        </div>
+            <Link href="/login" className="hover:text-white">
+              Login
+            </Link>
+
+            <Link href="/register" className="hover:text-white">
+              Register
+            </Link>
+
+            <Link
+              href="/portal"
+              className="rounded-xl bg-emerald-400 px-4 py-2 font-semibold text-slate-950 hover:bg-emerald-300"
+            >
+              Portal Prototype
+            </Link>
+          </div>
 
         <Link
           href="/portal"
