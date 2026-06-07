@@ -55,7 +55,17 @@ function getRequiredDeviceText(packageType: string) {
   if (packageType === "MOBILE_APP") return "Requires CLIMBER_DEVICE";
   if (packageType === "FIRMWARE_UPDATER") return "Requires any registered device";
   if (packageType === "DOCUMENTATION") return "Requires any registered device";
+
   return "Requires registered device";
+}
+
+function getPackageTypeLabel(packageType: string) {
+  if (packageType === "BASECAMP_SOFTWARE") return "Basecamp Software";
+  if (packageType === "MOBILE_APP") return "Mobile App";
+  if (packageType === "FIRMWARE_UPDATER") return "Firmware Updater";
+  if (packageType === "DOCUMENTATION") return "Documentation";
+
+  return packageType;
 }
 
 function isPackageAllowed(packageType: string, deviceTypes: string[]) {
@@ -163,7 +173,6 @@ export default function DownloadsPage() {
       }
 
       setPackages(packageData ?? []);
-
       setIsCheckingAuth(false);
       setIsLoadingData(false);
     }
@@ -177,7 +186,7 @@ export default function DownloadsPage() {
         title="Software and Firmware Packages"
         description="Checking portal authentication..."
       >
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300 sm:p-6">
           Checking login status...
         </div>
       </PortalLayout>
@@ -190,11 +199,12 @@ export default function DownloadsPage() {
         title="Software and Firmware Packages"
         description="Login is required to view software package downloads."
       >
-        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Login Required</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
-            Downloads are now linked to registered basecamp devices. Please login
-            or create a basecamp account before accessing software packages.
+            Downloads are linked to registered basecamp devices. Please login or
+            create a basecamp account before accessing software packages.
           </p>
 
           <div className="mt-6 flex flex-col gap-4 sm:flex-row">
@@ -234,24 +244,26 @@ export default function DownloadsPage() {
       title="Software and Firmware Packages"
       description="Downloads are unlocked based on the physical devices registered under your basecamp account."
     >
-      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
+      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-5 sm:p-6">
         <h2 className="text-2xl font-bold">Device-Based Download Access</h2>
+
         <p className="mt-3 leading-7 text-slate-300">
-          The portal now checks your registered devices before showing software
+          The portal checks your registered devices before showing software
           packages. This keeps the download center closer to a real product
           workflow while live climber tracking remains local at the basecamp.
         </p>
       </div>
 
       {errorMessage && (
-        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6 text-orange-300">
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 text-orange-300 sm:p-6">
           {errorMessage}
         </div>
       )}
 
       {basecamps.length === 0 && (
-        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">No Basecamp Account Found</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
             Your login exists, but no basecamp account is connected yet. Create a
             basecamp account first.
@@ -267,8 +279,9 @@ export default function DownloadsPage() {
       )}
 
       {basecamps.length > 0 && devices.length === 0 && (
-        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Register a Device First</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
             Downloads are unlocked after you register at least one physical
             device under your basecamp account.
@@ -285,7 +298,7 @@ export default function DownloadsPage() {
 
       {devices.length > 0 && (
         <>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-slate-400">Registered Devices</p>
               <p className="mt-2 text-3xl font-bold">{devices.length}</p>
@@ -303,15 +316,16 @@ export default function DownloadsPage() {
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-slate-400">Device Types</p>
-              <p className="mt-2 text-xl font-bold">
+              <p className="mt-2 break-words text-lg font-bold">
                 {registeredDeviceTypes.join(", ")}
               </p>
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
             <h2 className="text-2xl font-bold">Unlocked Downloads</h2>
-            <p className="mt-2 text-sm text-slate-400">
+
+            <p className="mt-2 text-sm leading-6 text-slate-400">
               These records are available because matching devices are registered
               under your basecamp account.
             </p>
@@ -321,9 +335,11 @@ export default function DownloadsPage() {
             )}
 
             {!isLoadingData && allowedPackages.length === 0 && (
-              <p className="mt-5 text-slate-300">
-                No unlocked package records found.
-              </p>
+              <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950 p-5">
+                <p className="text-slate-300">
+                  No unlocked package records found for your registered devices.
+                </p>
+              </div>
             )}
 
             {!isLoadingData && allowedPackages.length > 0 && (
@@ -333,18 +349,26 @@ export default function DownloadsPage() {
                     key={item.id}
                     className="rounded-2xl border border-white/10 bg-slate-950 p-5"
                   >
-                    <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                       <div>
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="text-xs uppercase tracking-widest text-slate-500">
+                          {getPackageTypeLabel(item.package_type)}
+                        </p>
+
+                        <h3 className="mt-1 break-words text-lg font-semibold">
+                          {item.name}
+                        </h3>
+
+                        <p className="mt-2 break-words text-sm text-slate-400">
                           {item.file_name}
                         </p>
+
                         <p className="mt-1 text-xs text-emerald-300">
                           {item.package_type} • {item.version}
                         </p>
                       </div>
 
-                      <span className="w-fit rounded-full bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
+                      <span className="w-fit shrink-0 rounded-full bg-emerald-400/10 px-4 py-2 text-xs font-semibold text-emerald-300">
                         {item.status}
                       </span>
                     </div>
@@ -356,7 +380,7 @@ export default function DownloadsPage() {
                     <button
                       type="button"
                       disabled
-                      className="mt-5 rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-slate-400"
+                      className="mt-5 w-full rounded-xl border border-white/10 px-5 py-3 text-sm font-semibold text-slate-400 sm:w-fit"
                     >
                       Download unavailable in prototype
                     </button>
@@ -367,9 +391,10 @@ export default function DownloadsPage() {
           </div>
 
           {lockedPackages.length > 0 && (
-            <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
               <h2 className="text-2xl font-bold">Locked Downloads</h2>
-              <p className="mt-2 text-sm text-slate-400">
+
+              <p className="mt-2 text-sm leading-6 text-slate-400">
                 Register the matching device type to unlock these package
                 records.
               </p>
@@ -378,20 +403,28 @@ export default function DownloadsPage() {
                 {lockedPackages.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-2xl border border-white/10 bg-slate-950 p-5 opacity-70"
+                    className="rounded-2xl border border-white/10 bg-slate-950 p-5 opacity-75"
                   >
-                    <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                    <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                       <div>
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                        <p className="mt-1 text-sm text-slate-400">
+                        <p className="text-xs uppercase tracking-widest text-slate-500">
+                          {getPackageTypeLabel(item.package_type)}
+                        </p>
+
+                        <h3 className="mt-1 break-words text-lg font-semibold">
+                          {item.name}
+                        </h3>
+
+                        <p className="mt-2 break-words text-sm text-slate-400">
                           {item.file_name}
                         </p>
-                        <p className="mt-1 text-xs text-orange-300">
+
+                        <p className="mt-2 text-xs font-semibold text-orange-300">
                           {getRequiredDeviceText(item.package_type)}
                         </p>
                       </div>
 
-                      <span className="w-fit rounded-full bg-orange-400/10 px-4 py-2 text-sm text-orange-300">
+                      <span className="w-fit shrink-0 rounded-full bg-orange-400/10 px-4 py-2 text-xs font-semibold text-orange-300">
                         Locked
                       </span>
                     </div>
@@ -400,6 +433,18 @@ export default function DownloadsPage() {
               </div>
             </div>
           )}
+
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
+            <h2 className="text-2xl font-bold">Download Security Note</h2>
+
+            <p className="mt-3 leading-7 text-slate-300">
+              This prototype currently shows software package records only. In a
+              production release, real files should be stored in a protected
+              location such as private Supabase Storage, and temporary download
+              links should be generated only for authenticated users with
+              matching registered devices.
+            </p>
+          </div>
         </>
       )}
     </PortalLayout>
