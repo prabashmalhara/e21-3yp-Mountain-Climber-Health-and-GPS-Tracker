@@ -111,10 +111,11 @@ export default function ReleasesPage() {
   return (
     <PortalLayout
       title="Release Notes"
-      description="This page reads release note records from Supabase and tracks planned/current software and firmware milestones."
+      description="Release notes track current and planned software, firmware, and portal milestones."
     >
-      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
+      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-5 sm:p-6">
         <h2 className="text-2xl font-bold">Version Tracking Strategy</h2>
+
         <p className="mt-3 leading-7 text-slate-300">
           Each firmware and software module should have its own version number.
           Stable milestones should be tagged in GitHub before major changes such
@@ -123,10 +124,44 @@ export default function ReleasesPage() {
         </p>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
         <h2 className="text-2xl font-bold">Component Version Status</h2>
 
-        <div className="mt-5 overflow-hidden rounded-xl border border-white/10">
+        <p className="mt-2 text-sm leading-6 text-slate-400">
+          This section summarizes the current stage and next expected package for
+          each major system component.
+        </p>
+
+        {/* Mobile card layout */}
+        <div className="mt-5 grid gap-4 md:hidden">
+          {components.map((component) => (
+            <div
+              key={component.name}
+              className="rounded-2xl border border-white/10 bg-slate-950 p-5"
+            >
+              <p className="text-xs uppercase tracking-widest text-slate-500">
+                Component
+              </p>
+
+              <h3 className="mt-1 text-lg font-bold">{component.name}</h3>
+
+              <div className="mt-5 grid gap-3 text-sm">
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-slate-500">Current</p>
+                  <p className="mt-1 text-slate-200">{component.current}</p>
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-slate-500">Next Package</p>
+                  <p className="mt-1 text-slate-200">{component.next}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop table layout */}
+        <div className="mt-5 hidden overflow-hidden rounded-xl border border-white/10 md:block">
           <div className="grid grid-cols-3 bg-white/10 px-4 py-3 text-sm font-semibold text-slate-300">
             <p>Component</p>
             <p>Current</p>
@@ -147,19 +182,19 @@ export default function ReleasesPage() {
       </div>
 
       {isLoading && (
-        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300 sm:p-6">
           Loading release note records...
         </div>
       )}
 
       {errorMessage && (
-        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6 text-orange-300">
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 text-orange-300 sm:p-6">
           {errorMessage}
         </div>
       )}
 
       {!isLoading && !errorMessage && releases.length === 0 && (
-        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300 sm:p-6">
           No release note records found yet.
         </div>
       )}
@@ -169,22 +204,28 @@ export default function ReleasesPage() {
           {releases.map((release) => (
             <div
               key={release.id}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6"
             >
-              <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                 <div>
-                  <p className="text-sm font-semibold text-emerald-300">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-emerald-300">
                     Product Release
                   </p>
-                  <h2 className="mt-2 text-2xl font-bold">
+
+                  <h2 className="mt-2 break-words text-2xl font-bold">
                     {release.version}
                   </h2>
-                  <p className="mt-2 text-lg font-semibold text-slate-200">
+
+                  <p className="mt-2 break-words text-lg font-semibold text-slate-200">
                     {release.title}
+                  </p>
+
+                  <p className="mt-2 text-xs text-slate-500">
+                    Created: {new Date(release.created_at).toLocaleString()}
                   </p>
                 </div>
 
-                <span className="w-fit rounded-full bg-white/10 px-4 py-2 text-sm text-slate-300">
+                <span className="w-fit shrink-0 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-slate-300">
                   {release.status}
                 </span>
               </div>
@@ -193,7 +234,7 @@ export default function ReleasesPage() {
                 {release.description ?? "No release description added yet."}
               </p>
 
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {getReleaseItems(release).map((item) => (
                   <div
                     key={item}
@@ -207,6 +248,17 @@ export default function ReleasesPage() {
           ))}
         </div>
       )}
+
+      <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
+        <h2 className="text-2xl font-bold">Release Management Note</h2>
+
+        <p className="mt-3 leading-7 text-slate-300">
+          Release notes in this portal are used for product and project tracking.
+          Real deployment packages should be connected to stable GitHub tags,
+          firmware version records, and protected download records when the
+          system is prepared for field deployment.
+        </p>
+      </div>
     </PortalLayout>
   );
 }

@@ -87,6 +87,7 @@ export default function RegisterDevicePage() {
     async function loadUserData() {
       setIsCheckingAuth(true);
       setIsLoadingData(true);
+      setErrorMessage("");
 
       const {
         data: { user },
@@ -122,10 +123,11 @@ export default function RegisterDevicePage() {
 
       if (firstBasecampId) {
         await loadDevices(firstBasecampId);
+      } else {
+        setIsLoadingData(false);
       }
 
       setIsCheckingAuth(false);
-      setIsLoadingData(false);
     }
 
     loadUserData();
@@ -133,11 +135,16 @@ export default function RegisterDevicePage() {
   }, []);
 
   async function loadDevices(basecampAccountId: string) {
+    setIsLoadingData(true);
+    setErrorMessage("");
+
     const { data, error } = await supabase
       .from("devices")
       .select("*")
       .eq("basecamp_account_id", basecampAccountId)
       .order("created_at", { ascending: false });
+
+    setIsLoadingData(false);
 
     if (error) {
       console.error("Device load error:", error);
@@ -167,7 +174,9 @@ export default function RegisterDevicePage() {
     setErrorMessage("");
 
     if (!selectedBasecampId || !serialNumber.trim() || !deviceType.trim()) {
-      setErrorMessage("Please select a basecamp, enter device serial, and select device type.");
+      setErrorMessage(
+        "Please select a basecamp, enter device serial, and select device type."
+      );
       return;
     }
 
@@ -218,7 +227,7 @@ export default function RegisterDevicePage() {
         title="Register Device"
         description="Checking portal authentication..."
       >
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300 sm:p-6">
           Checking login status...
         </div>
       </PortalLayout>
@@ -231,10 +240,11 @@ export default function RegisterDevicePage() {
         title="Register Device"
         description="Login is required to register devices under a real basecamp account."
       >
-        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Login Required</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
-            Device registration is now linked to real basecamp accounts. Please
+            Device registration is linked to real basecamp accounts. Please
             login or create a basecamp account before registering devices.
           </p>
 
@@ -263,18 +273,20 @@ export default function RegisterDevicePage() {
       title="Register Device"
       description="Register physical devices under your real basecamp account."
     >
-      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-6">
+      <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-5 sm:p-6">
         <h2 className="text-2xl font-bold">Real Basecamp Device Registration</h2>
+
         <p className="mt-3 leading-7 text-slate-300">
-          Devices are now linked to the logged-in user's basecamp account. This
+          Devices are linked to the logged-in user&apos;s basecamp account. This
           makes the portal closer to a real product workflow while keeping live
           climber tracking local at the basecamp.
         </p>
       </div>
 
       {basecamps.length === 0 && (
-        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="mt-8 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">No Basecamp Account Found</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
             Your login exists, but no basecamp profile was found. Create a
             basecamp account first before registering devices.
@@ -291,15 +303,19 @@ export default function RegisterDevicePage() {
 
       {basecamps.length > 0 && (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
             <h2 className="text-2xl font-bold">Device Registration Form</h2>
+
             <p className="mt-2 text-sm text-slate-400">
-              This form saves device records under your selected basecamp account.
+              This form saves device records under your selected basecamp
+              account.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
               <div>
-                <label className="text-sm text-slate-300">Basecamp Account</label>
+                <label className="text-sm text-slate-300">
+                  Basecamp Account
+                </label>
                 <select
                   value={selectedBasecampId}
                   onChange={(event) => handleBasecampChange(event.target.value)}
@@ -351,7 +367,9 @@ export default function RegisterDevicePage() {
               </div>
 
               <div>
-                <label className="text-sm text-slate-300">Firmware Version</label>
+                <label className="text-sm text-slate-300">
+                  Firmware Version
+                </label>
                 <input
                   type="text"
                   value={firmwareVersion}
@@ -383,7 +401,7 @@ export default function RegisterDevicePage() {
             </form>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
             <h2 className="text-2xl font-bold">Supported Device Types</h2>
 
             <div className="mt-5 grid gap-4">
@@ -393,6 +411,7 @@ export default function RegisterDevicePage() {
                   className="rounded-xl border border-white/10 bg-slate-950 p-4"
                 >
                   <h3 className="font-semibold">{device.label}</h3>
+
                   <p className="mt-1 text-sm text-emerald-300">
                     Example ID: {device.example}
                   </p>
@@ -408,7 +427,7 @@ export default function RegisterDevicePage() {
       )}
 
       {basecamps.length > 0 && (
-        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Registered Devices</h2>
 
           {isLoadingData && (
@@ -416,36 +435,95 @@ export default function RegisterDevicePage() {
           )}
 
           {!isLoadingData && registeredDevices.length === 0 && (
-            <p className="mt-4 text-slate-300">
-              No devices registered under this basecamp yet.
-            </p>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950 p-5">
+              <p className="text-slate-300">
+                No devices registered under this basecamp yet.
+              </p>
+            </div>
           )}
 
           {!isLoadingData && registeredDevices.length > 0 && (
-            <div className="mt-5 overflow-hidden rounded-xl border border-white/10">
-              <div className="grid grid-cols-4 bg-white/10 px-4 py-3 text-sm font-semibold text-slate-300">
-                <p>Device Serial</p>
-                <p>Type</p>
-                <p>Friendly Name</p>
-                <p>Status</p>
+            <>
+              {/* Mobile card layout */}
+              <div className="mt-5 grid gap-4 md:hidden">
+                {registeredDevices.map((device) => (
+                  <div
+                    key={device.id}
+                    className="rounded-2xl border border-white/10 bg-slate-950 p-5"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-widest text-slate-500">
+                          Device Serial
+                        </p>
+
+                        <h3 className="mt-1 break-words text-lg font-bold">
+                          {device.serial_number}
+                        </h3>
+                      </div>
+
+                      <span className="shrink-0 rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+                        {device.status}
+                      </span>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                        <p className="text-slate-500">Type</p>
+                        <p className="mt-1 text-slate-200">
+                          {getDeviceLabel(device.device_type)}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                        <p className="text-slate-500">Friendly Name</p>
+                        <p className="mt-1 text-slate-200">
+                          {device.friendly_name ?? "-"}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                        <p className="text-slate-500">Firmware</p>
+                        <p className="mt-1 text-slate-200">
+                          {device.firmware_version ?? "-"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {registeredDevices.map((device) => (
-                <div
-                  key={device.id}
-                  className="grid grid-cols-4 border-t border-white/10 px-4 py-3 text-sm"
-                >
-                  <p className="font-semibold">{device.serial_number}</p>
-                  <p className="text-slate-300">
-                    {getDeviceLabel(device.device_type)}
-                  </p>
-                  <p className="text-slate-300">
-                    {device.friendly_name ?? "-"}
-                  </p>
-                  <p className="text-slate-300">{device.status}</p>
+              {/* Desktop table layout */}
+              <div className="mt-5 hidden overflow-hidden rounded-xl border border-white/10 md:block">
+                <div className="grid grid-cols-4 bg-white/10 px-4 py-3 text-sm font-semibold text-slate-300">
+                  <p>Device Serial</p>
+                  <p>Type</p>
+                  <p>Friendly Name</p>
+                  <p>Status</p>
                 </div>
-              ))}
-            </div>
+
+                {registeredDevices.map((device) => (
+                  <div
+                    key={device.id}
+                    className="grid grid-cols-4 border-t border-white/10 px-4 py-3 text-sm"
+                  >
+                    <p className="break-words font-semibold">
+                      {device.serial_number}
+                    </p>
+
+                    <p className="text-slate-300">
+                      {getDeviceLabel(device.device_type)}
+                    </p>
+
+                    <p className="text-slate-300">
+                      {device.friendly_name ?? "-"}
+                    </p>
+
+                    <p className="text-slate-300">{device.status}</p>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}

@@ -95,10 +95,11 @@ export default function SupportPage() {
 
       if (firstBasecampId) {
         await loadTickets(firstBasecampId);
+      } else {
+        setIsLoadingData(false);
       }
 
       setIsCheckingAuth(false);
-      setIsLoadingData(false);
     }
 
     loadUserData();
@@ -106,11 +107,16 @@ export default function SupportPage() {
   }, []);
 
   async function loadTickets(basecampAccountId: string) {
+    setIsLoadingData(true);
+    setErrorMessage("");
+
     const { data, error } = await supabase
       .from("support_tickets")
       .select("*")
       .eq("basecamp_account_id", basecampAccountId)
       .order("created_at", { ascending: false });
+
+    setIsLoadingData(false);
 
     if (error) {
       console.error("Support tickets load error:", error);
@@ -139,7 +145,12 @@ export default function SupportPage() {
     setSuccessMessage("");
     setErrorMessage("");
 
-    if (!selectedBasecampId || !issueType.trim() || !title.trim() || !description.trim()) {
+    if (
+      !selectedBasecampId ||
+      !issueType.trim() ||
+      !title.trim() ||
+      !description.trim()
+    ) {
       setErrorMessage("Please select a basecamp and fill all support fields.");
       return;
     }
@@ -171,8 +182,11 @@ export default function SupportPage() {
 
   if (isCheckingAuth) {
     return (
-      <PortalLayout title="Support" description="Checking portal authentication...">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">
+      <PortalLayout
+        title="Support"
+        description="Checking portal authentication..."
+      >
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-slate-300 sm:p-6">
           Checking login status...
         </div>
       </PortalLayout>
@@ -185,11 +199,12 @@ export default function SupportPage() {
         title="Support"
         description="Login is required to submit support tickets under a real basecamp account."
       >
-        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-6">
+        <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Login Required</h2>
+
           <p className="mt-3 leading-7 text-slate-300">
-            Support tickets are now linked to real basecamp accounts. Please
-            login or create a basecamp account before submitting support requests.
+            Support tickets are linked to real basecamp accounts. Please login
+            or create a basecamp account before submitting support requests.
           </p>
 
           <div className="mt-6 flex flex-col gap-4 sm:flex-row">
@@ -218,10 +233,15 @@ export default function SupportPage() {
       description="Submit support tickets linked to your real basecamp account."
     >
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Support Categories</h2>
 
-          <div className="mt-5 grid gap-3">
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            Choose the closest category when reporting installation, firmware,
+            device, or deployment issues.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             {supportCategories.map((item) => (
               <div
                 key={item}
@@ -235,15 +255,17 @@ export default function SupportPage() {
           <div className="mt-6 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-5">
             <h3 className="text-xl font-bold">Support Scope</h3>
             <p className="mt-3 text-sm leading-6 text-slate-300">
-              This portal support system is for product setup, software packages,
-              firmware versions, device registration, and customer support. Live
-              climber tracking and SOS monitoring remain local at the basecamp.
+              This portal support system is for product setup, software
+              packages, firmware versions, device registration, and customer
+              support. Live climber tracking and SOS monitoring remain local at
+              the basecamp.
             </p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Support Request Form</h2>
+
           <p className="mt-2 text-sm text-slate-400">
             Submit a support request under your selected basecamp account.
           </p>
@@ -251,6 +273,7 @@ export default function SupportPage() {
           {basecamps.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5">
               <h3 className="text-xl font-bold">No Basecamp Account Found</h3>
+
               <p className="mt-3 text-sm leading-6 text-slate-300">
                 Your login exists, but no basecamp profile was found. Create a
                 basecamp account first before submitting support tickets.
@@ -266,7 +289,9 @@ export default function SupportPage() {
           ) : (
             <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
               <div>
-                <label className="text-sm text-slate-300">Basecamp Account</label>
+                <label className="text-sm text-slate-300">
+                  Basecamp Account
+                </label>
                 <select
                   value={selectedBasecampId}
                   onChange={(event) => handleBasecampChange(event.target.value)}
@@ -340,7 +365,7 @@ export default function SupportPage() {
       </div>
 
       {basecamps.length > 0 && (
-        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6">
           <h2 className="text-2xl font-bold">Your Support Tickets</h2>
 
           {isLoadingData && (
@@ -348,9 +373,11 @@ export default function SupportPage() {
           )}
 
           {!isLoadingData && tickets.length === 0 && (
-            <p className="mt-4 text-slate-300">
-              No support tickets submitted under this basecamp yet.
-            </p>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950 p-5">
+              <p className="text-slate-300">
+                No support tickets submitted under this basecamp yet.
+              </p>
+            </div>
           )}
 
           {!isLoadingData && tickets.length > 0 && (
@@ -360,21 +387,28 @@ export default function SupportPage() {
                   key={ticket.id}
                   className="rounded-2xl border border-white/10 bg-slate-950 p-5"
                 >
-                  <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                  <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                     <div>
-                      <h3 className="text-lg font-bold">{ticket.title}</h3>
-                      <p className="mt-1 text-sm text-emerald-300">
+                      <p className="text-xs uppercase tracking-widest text-slate-500">
                         {ticket.issue_type}
                       </p>
+
+                      <h3 className="mt-1 break-words text-lg font-bold">
+                        {ticket.title}
+                      </h3>
                     </div>
 
-                    <span className="w-fit rounded-full bg-white/10 px-4 py-2 text-sm text-slate-300">
+                    <span className="w-fit rounded-full bg-emerald-400/10 px-4 py-2 text-xs font-semibold text-emerald-300">
                       {ticket.status}
                     </span>
                   </div>
 
-                  <p className="mt-4 text-sm leading-6 text-slate-300">
+                  <p className="mt-4 whitespace-pre-wrap break-words text-sm leading-6 text-slate-300">
                     {ticket.description}
+                  </p>
+
+                  <p className="mt-4 text-xs text-slate-500">
+                    Created: {new Date(ticket.created_at).toLocaleString()}
                   </p>
                 </div>
               ))}
