@@ -1,20 +1,25 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getCurrentAccountStatus } from "@/lib/account/requireVerifiedAccount";
 
 export default async function DevicesPage() {
-  const supabase = await createSupabaseServerClient();
+  const accountStatus = await getCurrentAccountStatus();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  if (!accountStatus.loggedIn) {
     redirect("/login");
   }
 
+  if (!accountStatus.isVerified) {
+    redirect("/portal");
+  }
+
+  const supabase = await createSupabaseServerClient();
+
   const { data: devices, error } = await supabase
     .from("devices")
-    .select("id, device_uid, device_type, hardware_version, firmware_version, serial_number, status, registered_at")
+    .select(
+      "id, device_uid, device_type, hardware_version, firmware_version, serial_number, status, registered_at"
+    )
     .order("registered_at", { ascending: false });
 
   return (

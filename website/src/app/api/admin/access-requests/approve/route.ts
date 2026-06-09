@@ -16,6 +16,13 @@ export async function POST(request: Request) {
     const body = await request.json();
     const requestId = String(body.request_id || "").trim();
 
+    if (!requestId) {
+      return NextResponse.json(
+        { ok: false, message: "Request ID is required." },
+        { status: 400 }
+      );
+    }
+
     const { data: accessRequest, error: requestError } = await supabaseAdmin
       .from("basecamp_access_requests")
       .select("*")
@@ -29,60 +36,61 @@ export async function POST(request: Request) {
       );
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    if (!accessRequest.user_id && !accessRequest.email) {
+      return NextResponse.json(
+        { ok: false, message: "Request has no linked user or email." },
+        { status: 400 }
+      );
+    }
 
-    const { data: inviteData, error: inviteError } =
-      await supabaseAdmin.auth.admin.inviteUserByEmail(accessRequest.email, {
-        redirectTo: `${siteUrl}/auth/callback?next=/set-password`,
-        data: {
-          full_name: accessRequest.full_name,
-          organization_name: accessRequest.organization_name,
-          role: "basecamp_owner",
-        },
+    let accountQuery = supabaseAdmin
+      .from("basecamp_accounts")
+      .update({
+        verification_status: "verified",
+        updated_at: new Date().toISOString(),
       });
 
-    if (inviteError) {
+    if (accessRequest.user_id) {
+      accountQuery = accountQuery.eq("id", accessRequest.user_id);
+    } else {
+      accountQuery = accountQuery.eq("email", accessRequest.email);
+    }
+
+    const { error: accountError } = await accountQuery;
+
+    if (accountError) {
       return NextResponse.json(
-        { ok: false, message: inviteError.message },
+        { ok: false, message: accountError.message },
         { status: 500 }
       );
     }
 
-    const invitedUserId = inviteData.user?.id;
-
-    if (invitedUserId) {
-      await supabaseAdmin.from("basecamp_accounts").upsert({
-        id: invitedUserId,
-        full_name: accessRequest.full_name || "Basecamp Owner",
-        organization_name: accessRequest.organization_name,
-        email: accessRequest.email,
-        phone: accessRequest.phone,
-        location: accessRequest.location,
-        role: "basecamp_owner",
-        verification_status: "verified",
-        updated_at: new Date().toISOString(),
-      });
-    }
-
-    await supabaseAdmin
+    const { error: requestUpdateError } = await supabaseAdmin
       .from("basecamp_access_requests")
       .update({
-        status: "invited",
-        admin_note: "Approved and invitation email sent.",
+        status: "approved",
+        admin_note: "Account approved. Portal access unlocked.",
         updated_at: new Date().toISOString(),
       })
       .eq("id", requestId);
 
+    if (requestUpdateError) {
+      return NextResponse.json(
+        { ok: false, message: requestUpdateError.message },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       ok: true,
-      message: `Invitation sent to ${accessRequest.email}.`,
+      message: `Account approved for ${accessRequest.email}.`,
     });
   } catch (error) {
     return NextResponse.json(
       {
         ok: false,
         message:
-          error instanceof Error ? error.message : "Failed to approve request.",
+          error instanceof Error ? error.message : "Failed to approve account.",
       },
       { status: 500 }
     );

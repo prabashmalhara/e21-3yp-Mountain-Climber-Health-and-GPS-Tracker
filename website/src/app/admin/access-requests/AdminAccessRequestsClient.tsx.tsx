@@ -45,17 +45,20 @@ export default function AdminAccessRequestsClient({
         throw new Error(data.message || "Approval failed.");
       }
 
-      setMessage(data.message);
+      setMessage(data.message || "Account approved.");
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Something went wrong.");
+      setMessage(
+        error instanceof Error ? error.message : "Something went wrong."
+      );
     } finally {
       setLoadingId(null);
     }
   }
 
   async function rejectRequest(id: string) {
-    const admin_note = window.prompt("Reason for rejection:") || "Rejected by admin.";
+    const admin_note =
+      window.prompt("Reason for rejection:") || "Rejected by admin.";
 
     setLoadingId(id);
     setMessage("");
@@ -66,7 +69,10 @@ export default function AdminAccessRequestsClient({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ request_id: id, admin_note }),
+        body: JSON.stringify({
+          request_id: id,
+          admin_note,
+        }),
       });
 
       const data = await response.json();
@@ -75,10 +81,12 @@ export default function AdminAccessRequestsClient({
         throw new Error(data.message || "Rejection failed.");
       }
 
-      setMessage(data.message);
+      setMessage(data.message || "Request rejected.");
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Something went wrong.");
+      setMessage(
+        error instanceof Error ? error.message : "Something went wrong."
+      );
     } finally {
       setLoadingId(null);
     }
@@ -108,34 +116,58 @@ export default function AdminAccessRequestsClient({
           <tbody>
             {requests.map((request) => (
               <tr key={request.id} className="border-t border-white/10">
-                <td className="p-4">
+                <td className="p-4 align-top">
                   <div className="font-bold">{request.full_name}</div>
                   <div className="mt-2 max-w-xs text-xs text-slate-400">
-                    {request.reason}
+                    {request.reason || "-"}
+                  </div>
+                  <div className="mt-2 text-xs text-slate-500">
+                    {new Date(request.created_at).toLocaleString()}
                   </div>
                 </td>
-                <td className="p-4">{request.organization_name || "-"}</td>
-                <td className="p-4">{request.email}</td>
-                <td className="p-4">{request.location || "-"}</td>
-                <td className="p-4">{request.status}</td>
-                <td className="p-4">
+
+                <td className="p-4 align-top">
+                  {request.organization_name || "-"}
+                </td>
+
+                <td className="p-4 align-top">{request.email}</td>
+
+                <td className="p-4 align-top">{request.location || "-"}</td>
+
+                <td className="p-4 align-top">
+                  <span className="rounded-full border border-white/15 px-3 py-1 text-xs font-bold">
+                    {request.status}
+                  </span>
+
+                  {request.admin_note && (
+                    <div className="mt-2 max-w-xs text-xs text-slate-400">
+                      {request.admin_note}
+                    </div>
+                  )}
+                </td>
+
+                <td className="p-4 align-top">
                   <div className="flex flex-col gap-2">
                     <button
-                      disabled={loadingId === request.id || request.status === "invited"}
+                      disabled={loadingId === request.id || request.status === "approved"}
                       onClick={() => approveRequest(request.id)}
                       className="rounded-lg bg-emerald-400 px-4 py-2 font-bold text-slate-950 disabled:opacity-40"
                     >
-                      {loadingId === request.id ? "Processing..." : "Approve & Invite"}
+                      {loadingId === request.id ? "Processing..." : "Approve Account"}
                     </button>
 
                     <button
-                      disabled={loadingId === request.id || request.status === "rejected"}
+                      disabled={
+                        loadingId === request.id ||
+                        request.status === "approved" ||
+                        request.status === "rejected"
+                      }
                       onClick={() => rejectRequest(request.id)}
                       className="rounded-lg border border-red-400 px-4 py-2 font-bold text-red-300 disabled:opacity-40"
                     >
                       Reject
                     </button>
-                  </div>
+                                      </div>
                 </td>
               </tr>
             ))}

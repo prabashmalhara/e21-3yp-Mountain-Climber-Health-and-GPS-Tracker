@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createSupabaseBrowserClient();
+
+  const next = searchParams.get("next");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -19,6 +22,7 @@ export default function LoginPage() {
     setMessage("");
 
     const formData = new FormData(event.currentTarget);
+
     const email = String(formData.get("email") || "").trim();
     const password = String(formData.get("password") || "");
 
@@ -27,14 +31,32 @@ export default function LoginPage() {
       password,
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       setMessage(error.message);
       return;
     }
 
-    router.push("/portal");
+    const { data: isAdminData, error: adminError } = await supabase.rpc(
+      "is_admin"
+    );
+
+    if (adminError) {
+      console.error("Admin check error:", adminError);
+    }
+
+    const isAdmin = Boolean(isAdminData);
+
+    setLoading(false);
+
+    if (next) {
+      router.push(next);
+    } else if (isAdmin) {
+      router.push("/admin");
+    } else {
+      router.push("/portal");
+    }
+
     router.refresh();
   }
 
@@ -46,11 +68,30 @@ export default function LoginPage() {
         Only verified and invited basecamp owners can log in.
       </p>
 
-      <form onSubmit={login} className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <input name="email" type="email" required placeholder="Email" className="w-full rounded-xl border border-white/15 px-4 py-3" />
-        <input name="password" type="password" required placeholder="Password" className="w-full rounded-xl border border-white/15 px-4 py-3" />
+      <form
+        onSubmit={login}
+        className="mt-8 space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6"
+      >
+        <input
+          name="email"
+          type="email"
+          required
+          placeholder="Email"
+          className="w-full rounded-xl border border-white/15 px-4 py-3"
+        />
 
-        <button disabled={loading} className="w-full rounded-xl bg-emerald-400 px-6 py-3 font-bold text-slate-950 disabled:opacity-50">
+        <input
+          name="password"
+          type="password"
+          required
+          placeholder="Password"
+          className="w-full rounded-xl border border-white/15 px-4 py-3"
+        />
+
+        <button
+          disabled={loading}
+          className="w-full rounded-xl bg-emerald-400 px-6 py-3 font-bold text-slate-950 disabled:opacity-50"
+        >
           {loading ? "Logging in..." : "Login"}
         </button>
 
