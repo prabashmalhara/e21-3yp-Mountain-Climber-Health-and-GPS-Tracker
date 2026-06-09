@@ -19,18 +19,55 @@ export async function GET(
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const { data: pkg, error } = await supabase
+  const { data: account } = await supabaseAdmin
+    .from("basecamp_accounts")
+    .select("verification_status")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (account?.verification_status !== "verified") {
+    return NextResponse.json(
+      { ok: false, message: "Account approval required." },
+      { status: 403 }
+    );
+  }
+
+  const { data: pkg, error: pkgError } = await supabaseAdmin
     .from("software_packages")
-    .select("id, storage_path")
+    .select(
+      "id, title, storage_path, required_device_type, is_active"
+    )
     .eq("id", id)
     .eq("is_active", true)
     .single();
 
-  if (error || !pkg) {
+  if (pkgError || !pkg) {
     return NextResponse.json(
-      { ok: false, message: "Download not allowed or package not found." },
-      { status: 403 }
+      { ok: false, message: "Package not found." },
+      { status: 404 }
     );
+  }
+
+  if (pkg.required_device_type !== "any") {
+    const { data: matchingDevice } = await supabaseAdmin
+      .from("devices")
+      .select("id")
+      .eq("owner_id", user.id)
+      .eq("device_type", pkg.required_device_type)
+      .in("status", ["assigned", "active"])
+      .limit(1)
+      .maybeSingle();
+
+    if (!matchingDevice) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message:
+            "You do not have the required registered device for this download.",
+        },
+        { status: 403 }
+      );
+    }
   }
 
   const { data: signed, error: signedError } = await supabaseAdmin.storage
@@ -39,7 +76,12 @@ export async function GET(
 
   if (signedError || !signed?.signedUrl) {
     return NextResponse.json(
-      { ok: false, message: signedError?.message || "File not uploaded yet." },
+      {
+        ok: false,
+        message:
+          signedError?.message ||
+          "File not uploaded yet. Please contact support.",
+      },
       { status: 500 }
     );
   }
