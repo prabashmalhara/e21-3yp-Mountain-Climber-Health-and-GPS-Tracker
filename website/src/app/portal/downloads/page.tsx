@@ -9,6 +9,7 @@ type SoftwarePackage = {
   package_type: string;
   required_device_type: string;
   version: string;
+  install_supported: boolean | null;
 };
 
 export default async function DownloadsPage() {
@@ -39,7 +40,7 @@ export default async function DownloadsPage() {
   const { data: packages, error } = await supabase
     .from("software_packages")
     .select(
-      "id, title, description, package_type, required_device_type, version"
+      "id, title, description, package_type, required_device_type, version, install_supported"
     )
     .eq("is_active", true)
     .in("required_device_type", allowedTypes)
@@ -96,10 +97,21 @@ export default async function DownloadsPage() {
                   {pkg.version}
                 </p>
               </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              {pkg.install_supported && (
+                <a
+                  href={`/portal/install/${pkg.id}`}
+                  className="inline-block rounded-xl bg-emerald-400 px-5 py-3 font-bold text-slate-950"
+                >
+                  Install in Browser
+                </a>
+              )}
 
               <a
                 href={`/api/downloads/${pkg.id}`}
-                className="rounded-xl bg-emerald-400 px-5 py-3 font-bold text-slate-950"
+                className="inline-block rounded-xl border border-white/15 px-5 py-3 font-bold"
               >
                 Download
               </a>
